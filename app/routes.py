@@ -10,6 +10,6 @@ def index():
 def talk():
     return render_template('talk.html')
 
-@main.route('/test')
+@main.route('/game')
 def test():
-    return render_template('test.html')
+    return render_template('game.html')

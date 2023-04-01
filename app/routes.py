@@ -43,3 +43,11 @@ def talk():
     response = make_response(render_template('talk.html', username=username, roomId=room_code))
     #response.headers.add('Room-Code', room_code)
     return response
+
+@main.route('/game')
+def game():
+    return render_template('game.html')
+
+@main.route('/test')
+def test():
+    return render_template('test.html')

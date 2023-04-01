@@ -6,11 +6,13 @@
     --filled-bg: #caf0f8;
 
     --white: #fff;
-    --blue: #00aeef;
+    --light-blue: #00aeef;
+    --dark-blue: #0666c0;
     --red: #e91e63;
     --black: #000;
 
-    --nav-size: 70px;
+
+    --nav-size: 100px;
 
     --border-radius: 10px;
 
@@ -21,7 +23,13 @@
     --font-size: 1.5rem;
     --font-size-lg: 2rem;
     --font-size-xl: 3rem;
+    --font-size-title: 5rem;
 }
+
+body {
+  font-family: 'Courier New', monospace;
+}
+
 
 .main {
     /* height: 100vh; */
@@ -31,6 +39,34 @@
 }
 
 /* start screen */
+
+.typewriter h1 {
+  font-size: var(--font-size-title);
+  font-family: monospace;
+  overflow: hidden; /* Ensures the content is not revealed until the animation */
+  border-right: .15em solid orange; /* The typwriter cursor */
+  white-space: nowrap; /* Keeps the content on a single line */
+  margin: 0 auto; /* Gives that scrolling effect as the typing happens */
+  letter-spacing: .15em; /* Adjust as needed */
+  animation: 
+    typing 3.5s steps(30, end),
+    blink-caret .5s step-end infinite;
+}
+
+/* The typing effect */
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+/* The typewriter cursor effect */
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: orange }
+}
+
+
+
 .input-username {
     border-radius: var(--border-radius);
     outline: 0;
@@ -38,6 +74,7 @@
     padding: 20px;
     font-size: var(--font-size-lg);
     text-align: center;
+    margin-top: 20%;
     margin-bottom: 5%;
 }
 
@@ -71,4 +108,58 @@
     font-size: var(--font-size-lg);
     cursor: pointer;
     margin-bottom: 5%;
+}
+
+
+/* waves */
+
+.ocean {
+  width: 100%;
+  position:absolute;
+  bottom:0;
+  left:0;
+  animation: rise 100s forwards;
+}
+
+
+@keyframes rise {
+    from { height: 10%; } /* Set the starting height of the div */
+    to { height: 120%; } /* Set the ending height of the div */
+}
+
+/* Oli Waves */
+
+.moving-path1 
+{
+    animation-name: animate;
+    animation-duration: 10s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    fill: #0000ff;
+}
+.moving-path2
+{
+    animation-name: animate;
+    animation-duration: 9s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    fill: #5555ff;
+}
+.moving-path3
+{
+    animation-name: animate;
+    animation-duration: 15s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    fill: #3333ff;
+}
+
+  
+@keyframes animate
+{
+    0%   { transform: translateX(0px)}
+    25%  { transform: translateX(20px)}
+    50%  { transform: translateX(40px)}
+    75%  { transform: translateX(60px)}
+    100% { transform: translateX(80px)}
 }

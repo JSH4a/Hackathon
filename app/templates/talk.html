@@ -6,31 +6,19 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     </head>
     <body>
-        <script>
-            $(document).ready(function() {
-                var socket = io.connect("http://127.0.0.1:5000/");
-
-                socket.on('connect', function () {
-                    socket.send("User Connected!");
-                });
-
-                socket.on('message', function(data) {
-                    $('#messages').prepend($('<p>').text(data));
-                });
-
-                $('#sendBtn').on('click', function() {
-                    socket.send($('#username').val() + ': ' + $('#message').val());
-                    $('#message').val('');
-                });
-            });
-        </script>
 
         </div>
-
-        <input type="text" id="username" placeholder="Username" value={{ username }}>
+        <p>{{ roomId }}</p>
+        <input type="text" id="username" placeholder="Username" value={{ username }}>  
         <input type="text" id="message" placeholder="Message">
-
+        <button id="homeBtn">Home</button>
         <button id="sendBtn">Send</button>
         <div id="messages"></div>
+
+        <div id="room-id" data-value={{ roomId }} hidden="true"></div>
+
+
+
+        <script src="../static/scripts/main-game.js"></script>   
     </body>
 </html>

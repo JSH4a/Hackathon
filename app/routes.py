@@ -9,3 +9,7 @@ def index():
 @main.route('/talk')
 def talk():
     return render_template('talk.html')
+
+@main.route('/game')
+def test():
+    return render_template('game.html')

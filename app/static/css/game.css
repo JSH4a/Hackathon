@@ -88,12 +88,12 @@ html, body {
 #loading-screen {
   top: 50%;
   left: 50%;
-  display: none;
 }
 
 #podium {
   top: 20%;
   left: 50%;
+  display: none;
 }
 
 .circle-container {

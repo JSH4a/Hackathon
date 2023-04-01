@@ -25,6 +25,11 @@
     --font-size-xl: 3rem;
 }
 
+body {
+  font-family: 'Courier New', monospace;
+}
+
+
 .main {
     /* height: 100vh; */
     padding-top: var(--nav-size);

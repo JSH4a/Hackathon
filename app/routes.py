@@ -11,5 +11,9 @@ def talk():
     return render_template('talk.html')
 
 @main.route('/game')
-def test():
+def game():
     return render_template('game.html')
+
+@main.route('/test')
+def test():
+    return render_template('test.html')

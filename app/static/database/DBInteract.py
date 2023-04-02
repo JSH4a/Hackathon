@@ -10,7 +10,7 @@ class DBInteract:
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="root",
+            password="password",
             database="dataset"
         )
         self.conn = self.db.cursor(buffered=True)
@@ -201,14 +201,6 @@ class DBInteract:
 
         # print("1: ",type(response) )
 
-# return ((productID,))
-def getQuestions(numQ):
-    questions = []
-        co2 = response["ef_kg_co2eq"]
-
-        # print("3: ", co2 )
-
-        return (company, co2)
 
 
 db = DBInteract()
@@ -216,12 +208,13 @@ db = DBInteract()
 file = open("Companies.txt", encoding="utf8", errors='ignore')
 
 count = 0
+print("INSERT INTO COMPANIES (id, name, emissions, tags) VALUES")
 for line in file:
     int(count)
     count+=1
     line = line.replace(str(count), "").replace("%", "").replace("\n", "")
     current = line.split("-")
-    db.addCompany(current[0], float(current[1]), "")
+    print("("+str(count-1)+", \""+current[0]+"\","+str(float(current[1]))+","+"\"\"),")
 
 
 
@@ -257,4 +250,4 @@ db.close()
 
     return questions
 
-print(getQuestions(10))
+"""

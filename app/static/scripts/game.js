@@ -22,6 +22,8 @@ $(document).ready(function() {
     const loading_screen = document.getElementById('loading-screen');
     const top_half = document.getElementById('top');
     const bottom_half = document.getElementById('bottom');
+    
+    const fact = document.getElementById('fact');
 
     // add image click event to top image
     document.querySelector('#image-top').addEventListener('click', (e) => {
@@ -140,5 +142,10 @@ $(document).ready(function() {
             }
         }, 5000)
     })
+
+    socket.on('fact', function(data) {
+        console.log(data);
+        fact.innerHTML = data;
+    });
 
 });

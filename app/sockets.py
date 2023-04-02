@@ -2,7 +2,7 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from flask import redirect
 from . import socketio
 from .routes import removePlayerFromRoom, getRoomCode, rooms
-from .static.database.DBInteract import getQuestions
+from .static.database.DBInteract import *
 
 
 @socketio.on('message')
@@ -32,8 +32,9 @@ def on_join(data):
     join_room(room_code)
     emit('join_room_announcement', username + ' has joined the room.', room=room_code)
     emit('set-roomId', room_code)
+    emit('fact', DBInteract().getRandomFact())
     # check room is full
-    if len(rooms[room_code].getPlayers()) == 3:#rooms[room_code].getMaxSize():
+    if len(rooms[room_code].getPlayers()) == 4: #3:#rooms[room_code].getMaxSize():
     # then start game
         print("room full")
         # hide waiting
@@ -51,7 +52,7 @@ def on_answer(data):
     roomId = int(data['room'])
     score = data['score']
     rooms[roomId].addScore(username, score)
-    rooms[roomId].answers.add()
+    rooms[roomId].answers.add(username)
 
     
 
@@ -65,6 +66,9 @@ def on_answer(data):
         print("\n\nAFTER RESET",rooms[roomId].answers,"\nn")
         print("OUT:",rooms[roomId].answers)
         emit('leaderboard', top3, room=roomId)
+
+    else:
+        emit('fact', DBInteract().getRandomFact())
 
 @socketio.on('next-question')
 def next_question():

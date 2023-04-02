@@ -7,9 +7,10 @@ class Room:
         self.id = id if id is not None else generateId()
         self.max_size = max_size
         self.players = {}
+        self.answers = 0
 
-    def addPlayer(self, playerId, playerName):
-        self.players[playerId] = playerName
+    def addPlayer(self, playerId):
+        self.players[playerId] = 0
     
     def removePlayer(self, playerId):
         self.players.pop(playerId)
@@ -22,3 +23,6 @@ class Room:
     
     def getPlayers(self):
         return self.players
+    
+    def addScore(self, playerId, score):
+        self.players[playerId] += score

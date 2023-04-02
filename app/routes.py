@@ -13,7 +13,7 @@ def getRoomCode():
         if len(room.getPlayers()) < room.getMaxSize():
             return room.getId()
     newId = len(rooms)
-    rooms.append(Room(id=newId, max_size=2))
+    rooms.append(Room(id=newId, max_size=3))
     return  newId
 
 def removePlayerFromRoom(roomId, playerName):

@@ -1,5 +1,5 @@
 $(document).ready(function() {
-    var socket = io.connect("http://127.0.0.1:5000/");
+    var socket = io.connect("http://138.38.198.157:5000/");
     var roomId = document.getElementById("room-id").getAttribute('data-value')
 
     socket.on('connect', function() {

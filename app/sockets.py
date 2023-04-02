@@ -4,6 +4,7 @@ from . import socketio
 from .routes import removePlayerFromRoom, getRoomCode, rooms
 from .static.database.DBInteract import getQuestions
 
+
 @socketio.on('message')
 def handle_message(data):
     message = data['message']
@@ -22,9 +23,11 @@ def start_game(data):
 
 @socketio.on('join')
 def on_join(data):
+
     username = data['username']
     room_code = getRoomCode()
     rooms[room_code].addPlayer(username)
+    print(rooms)
     print('join_room_announcement', username + ' has joined the room.', room_code)
     join_room(room_code)
     emit('join_room_announcement', username + ' has joined the room.', room=room_code)
@@ -48,11 +51,19 @@ def on_answer(data):
     roomId = int(data['room'])
     score = data['score']
     rooms[roomId].addScore(username, score)
-    rooms[roomId].answers += 1
-    if rooms[roomId].answers == len(rooms[roomId].getPlayers()):
+    rooms[roomId].answers.add()
+
+    
+
+    print("\n\n", username, " has answered\n\n")
+
+    print('ooooooooooooo',len(rooms[roomId].getPlayers()))
+    if len(rooms[roomId].answers) == len(rooms[roomId].getPlayers()):
         top3 = [str(key)+":"+str(value) for key, value in rooms[roomId].getPlayers().items()]
         top3 = sorted(top3, key=lambda x: x.split(':')[1], reverse=True)[:3]
-        rooms[roomId].answers = 0
+        rooms[roomId].answers = set()
+        print("\n\nAFTER RESET",rooms[roomId].answers,"\nn")
+        print("OUT:",rooms[roomId].answers)
         emit('leaderboard', top3, room=roomId)
 
 @socketio.on('next-question')

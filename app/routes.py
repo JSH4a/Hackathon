@@ -4,6 +4,7 @@ from flask_socketio import emit
 
 main = Blueprint('main', __name__)
 rooms = []
+
 #room_code = 'AAAA'
 #rooms.append(Room(id=room_code))
 

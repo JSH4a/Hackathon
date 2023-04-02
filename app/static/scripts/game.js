@@ -1,43 +1,45 @@
-const image_top = document.getElementById('image-top');
-const image_bottom = document.getElementById('image-bottom');
-const top_lab = document.getElementById('top-label')
-const bot_lab = document.getElementById('bot-label')
-const question_lab = document.getElementById('question')
-const podium = document.getElementById('podium')
-const podFirst = document.getElementById('podium-text1')
-const podSec = document.getElementById('podium-text2')
-const podThird = document.getElementById('podium-text3')
 
-const loading_screen = document.getElementById('loading-screen');
-const top_half = document.getElementById('top');
-const bottom_half = document.getElementById('bottom');
-
-// add image click event to top image
-document.querySelector('#image-top').addEventListener('click', (e) => {
-    image_top.classList.add('selected');
-        setTimeout(() => {
-            image_top.classList.remove('selected');
-            image_top.focus();
-        }, 1000);
-});
-
-// add image click event to bottom image
-document.querySelector('#image-bottom').addEventListener('click', (e) => {
-    image_bottom.classList.add('selected');
-        setTimeout(() => {
-            image_bottom.classList.remove('selected');
-            image_bottom.focus();
-        }, 1000);
-});
 
 // socket stuff
 
 
 
 $(document).ready(function() {
-    var socket = io.connect("http://127.0.0.1:5000/");
+    var socket = io.connect("http://138.38.198.157:5000/");
     //var roomId = document.getElementById("room-id").getAttribute('data-value')
     var username = document.cookie.split('=')[1];
+
+    const image_top = document.getElementById('image-top');
+    const image_bottom = document.getElementById('image-bottom');
+    const top_lab = document.getElementById('top-label')
+    const bot_lab = document.getElementById('bot-label')
+    const question_lab = document.getElementById('question')
+    const podium = document.getElementById('podium')
+    const podFirst = document.getElementById('podium-text1')
+    const podSec = document.getElementById('podium-text2')
+    const podThird = document.getElementById('podium-text3')
+
+    const loading_screen = document.getElementById('loading-screen');
+    const top_half = document.getElementById('top');
+    const bottom_half = document.getElementById('bottom');
+
+    // add image click event to top image
+    document.querySelector('#image-top').addEventListener('click', (e) => {
+        image_top.classList.add('selected');
+            setTimeout(() => {
+                image_top.classList.remove('selected');
+                image_top.focus();
+            }, 1000);
+    });
+
+    // add image click event to bottom image
+    document.querySelector('#image-bottom').addEventListener('click', (e) => {
+        image_bottom.classList.add('selected');
+            setTimeout(() => {
+                image_bottom.classList.remove('selected');
+                image_bottom.focus();
+            }, 1000);
+    });
 
     socket.on('connect', function() {
         socket.emit('join', { username: username});});
@@ -74,12 +76,6 @@ $(document).ready(function() {
     });
     socket.on('show-game', function(data) {
         console.log(window.curIndex)
-        loading_screen.classList.add('hidden');
-        top_half.classList.remove('hidden');
-        bottom_half.classList.remove('hidden');
-        loading_screen.focus();
-        top_half.focus();
-        bottom_half.focus();
 
         question = window.questions[window.curIndex]
 
@@ -87,14 +83,14 @@ $(document).ready(function() {
         bot_lab.innerHTML = question[0][1][1]
 
 
-        if (question[1] == 0) {
+        if (question[2] == 0) {
             question_lab.innerHTML = 'Which is higher?'
             console.log("higher")
         } else {
             question_lab.innerHTML = 'Which is lower?'
             console.log("not higher")
         }
-        if (question[2] == 0){
+        if (question[3] == 0){
             image_top.addEventListener('click', function () {
                 setTimeout(sendQuestionAnswer, 600, 100)
             });
@@ -110,7 +106,12 @@ $(document).ready(function() {
             });
         }
 
-
+        loading_screen.classList.add('hidden');
+        top_half.classList.remove('hidden');
+        bottom_half.classList.remove('hidden');
+        loading_screen.focus();
+        top_half.focus();
+        bottom_half.focus();
 
     });
 

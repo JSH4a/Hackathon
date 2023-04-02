@@ -2,12 +2,19 @@
 def generateId():
     pass
 
+class User:
+    def __init__(self, username):
+        self.username = username
+        self.answered = False
+
+
 class Room:
     def __init__(self,id=None, max_size=2):
         self.id = id if id is not None else generateId()
         self.max_size = max_size
         self.players = {}
-        self.answers = 0
+        self.answers = set()
+        self.users = []
 
     def addPlayer(self, playerId):
         self.players[playerId] = 0

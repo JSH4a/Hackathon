@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, make_response
 from .room import Room
+from flask_socketio import emit
 
 main = Blueprint('main', __name__)
 rooms = []
@@ -9,7 +10,6 @@ rooms = []
 def getRoomCode():
     displayRooms()
     for room in rooms:
-        print(len(room.getPlayers()))
         if len(room.getPlayers()) < room.getMaxSize():
             return room.getId()
     newId = len(rooms)
@@ -17,8 +17,6 @@ def getRoomCode():
     return  newId
 
 def removePlayerFromRoom(roomId, playerName):
-    #displayRooms()
-    #rooms[roomId].removePlayer(playerName)
     for room in rooms:
         if room.getId() == int(roomId):
             room.removePlayer(playerName)
@@ -37,16 +35,17 @@ def index():
 
 @main.route('/talk')
 def talk():
-    room_code = getRoomCode()
     username = request.cookies.get('username')
-    rooms[room_code].addPlayer(username, username)
-    response = make_response(render_template('talk.html', username=username, roomId=room_code))
+    response = make_response(render_template('talk.html', username=username))
     #response.headers.add('Room-Code', room_code)
     return response
 
 @main.route('/game')
 def game():
-    return render_template('game.html')
+    username = request.cookies.get('username')
+
+    response = make_response(render_template('game.html', username=username))
+    return response
 
 @main.route('/test')
 def test():

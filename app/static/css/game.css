@@ -11,8 +11,10 @@ html, body {
   justify-content: center;
   position: relative;
   box-sizing: border-box;
+}
 
-  visibility: hidden;
+.hidden {
+  display: none;
 }
 
 #top {
@@ -83,6 +85,11 @@ html, body {
   position: absolute;
   transform: translate(-50%, -50%);
   text-align: center;
+  visibility: visible;
+}
+
+.panel hidden {
+  visibility: hidden;
 }
 
 #loading-screen {

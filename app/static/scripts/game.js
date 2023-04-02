@@ -5,7 +5,7 @@
 
 
 $(document).ready(function() {
-    var socket = io.connect("http://138.38.198.157:5000/");
+    var socket = io.connect("http://127.0.0.1:5000/");
     //var roomId = document.getElementById("room-id").getAttribute('data-value')
     var username = document.cookie.split('=')[1];
 
@@ -18,6 +18,8 @@ $(document).ready(function() {
     const podFirst = document.getElementById('podium-text1')
     const podSec = document.getElementById('podium-text2')
     const podThird = document.getElementById('podium-text3')
+    const top_img = document.getElementById('image-top')
+    const bot_img = document.getElementById('image-bottom')
 
     const loading_screen = document.getElementById('loading-screen');
     const top_half = document.getElementById('top');
@@ -82,6 +84,8 @@ $(document).ready(function() {
         top_lab.innerHTML = question[0][0][1]
         bot_lab.innerHTML = question[0][1][1]
 
+        top_img.setAttribute('src', question[1][0])
+        bot_img.setAttribute('src', question[1][1])
 
         if (question[2] == 0) {
             question_lab.innerHTML = 'Which is higher?'

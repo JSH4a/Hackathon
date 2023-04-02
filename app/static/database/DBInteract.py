@@ -3,7 +3,7 @@ import random
 import mysql.connector
 import requests
 
-from images import Fetcher
+from .images import Fetcher
 
 class DBInteract:
 
@@ -11,7 +11,7 @@ class DBInteract:
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="password",
+            password="root",
             database="dataset"
         )
         self.conn = self.db.cursor(buffered=True)
@@ -202,22 +202,34 @@ class DBInteract:
 
         # print("1: ",type(response) )
 
+def getQuestions(numQ):
+    questions = []
 
+    db = DBInteract()
 
-db = DBInteract()
+    productTuple = db.getProductsWithRange(random.randint(1, 40))
+    for i in range(numQ):
+        higherMode = round(random.randint(0, 1))
+        if higherMode:
+            if productTuple[0][2] >  productTuple[1][2]:
+                answer = 0
+            else:
+                answer = 1
+        else:
+            if productTuple[0][2] < productTuple[1][2]:
+                answer = 0
+            else:
+                answer = 1
 
-file = open("Companies.txt", encoding="utf8", errors='ignore')
+        image_url1, image_url2 = Fetcher.getImage(productTuple[0][1]), Fetcher.getImage(productTuple[1][1])
+        
+        questions.append((productTuple, (image_url1,image_url2), higherMode, answer))
 
-count = 0
-print("INSERT INTO COMPANIES (id, name, emissions, tags) VALUES")
-for line in file:
-    int(count)
-    count+=1
-    line = line.replace(str(count), "").replace("%", "").replace("\n", "")
-    current = line.split("-")
-    print("("+str(count-1)+", \""+current[0]+"\","+str(float(current[1]))+","+"\"\"),")
+        productTuple = db.getProductsWithRange(10, productTuple[0][0])
+        
+    db.close()
 
-
+    return questions
 
 """
 file = open("facts.txt", encoding="utf8", errors='ignore')

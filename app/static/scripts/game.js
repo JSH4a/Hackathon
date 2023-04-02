@@ -2,6 +2,7 @@ const image_top = document.getElementById('image-top');
 const image_bottom = document.getElementById('image-bottom');
 const top_lab = document.getElementById('top-label')
 const bot_lab = document.getElementById('bot-label')
+const question_lab = document.getElementById('question')
 const podium = document.getElementById('podium')
 const podFirst = document.getElementById('podium-text1')
 const podSec = document.getElementById('podium-text2')
@@ -87,8 +88,10 @@ $(document).ready(function() {
 
 
         if (question[1] == 0) {
+            question_lab.innerHTML = 'Which is higher?'
             console.log("higher")
         } else {
+            question_lab.innerHTML = 'Which is lower?'
             console.log("not higher")
         }
         if (question[2] == 0){

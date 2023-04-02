@@ -32,11 +32,9 @@ def on_join(data):
     if len(rooms[room_code].getPlayers()) == 2:#rooms[room_code].getMaxSize():
     # then start game
         print("room full")
-        # hide waiting
+        
+        
         emit('show-game', 'true', room=room_code)
-        # get game info
-            # get game products / companies
-            # get image
         # un hide game halves
 
     # else return waiting

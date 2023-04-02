@@ -1,7 +1,7 @@
 from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from flask import redirect
 from . import socketio
-from .routes import removePlayerFromRoom
+from .routes import removePlayerFromRoom, getRoomCode, rooms
 
 @socketio.on('message')
 def handle_message(data):
@@ -13,23 +13,34 @@ def handle_message(data):
 
 @socketio.on('start_game')
 def start_game(data):
-    print(data)
-    print(type(data))
-    username= data['username']
-    gamemode= data['gamemode']
-    print("user",username,"joined gamemode",gamemode)
-    #emit('change_webpage', '/talk')
-    ret_value = {'redirect':'/talk',
+    username = data['username']
+    gamemode = data['gamemode']
+    ret_value = {'redirect':'/game',
                 'cookie': username}
     return ret_value
 
 @socketio.on('join')
 def on_join(data):
     username = data['username']
-    room = data['room']
-    print('join_room_announcement', username + ' has joined the room.', room)
-    join_room(room)
-    emit('join_room_announcement', username + ' has joined the room.', room=room)
+    room_code = getRoomCode()
+    rooms[room_code].addPlayer(username, username)
+    print('join_room_announcement', username + ' has joined the room.', room_code)
+    join_room(room_code)
+    emit('join_room_announcement', username + ' has joined the room.', room=room_code)
+    emit('set-roomId', room_code)
+    # check room is full
+    if len(rooms[room_code].getPlayers()) == 2:#rooms[room_code].getMaxSize():
+    # then start game
+        print("room full")
+        # hide waiting
+        emit('show-game', 'true', room=room_code)
+        # get game info
+            # get game products / companies
+            # get image
+        # un hide game halves
+
+    # else return waiting
+   
     
 @socketio.on('leave')
 def on_leave(data):

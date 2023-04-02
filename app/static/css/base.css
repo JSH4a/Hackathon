@@ -10,11 +10,12 @@
     --dark-blue: #0666c0;
     --red: #e91e63;
     --black: #000;
+    --green: rgb(11, 194, 11);
 
 
     --nav-size: 100px;
 
-    --border-radius: 10px;
+    --border-radius: 100px;
 
     --space-y: 20px;
 
@@ -53,6 +54,20 @@ body {
     blink-caret .5s step-end infinite;
 }
 
+.typewriter h1:before {
+  color: var(--green);
+  content: "Ducking ";
+}
+
+.typewriter h1:after {
+  content: ".";
+}
+
+.typewriter h1 span {
+  text-decoration: line-through;
+  color: black;
+}
+
 /* The typing effect */
 @keyframes typing {
   from { width: 0 }
@@ -76,6 +91,9 @@ body {
     text-align: center;
     margin-top: 20%;
     margin-bottom: 5%;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+    border: 2px solid var(--black);
+
 }
 
 .input-err {
@@ -99,15 +117,22 @@ body {
 }
 
 .btn {
-    height: 80px;
-    background-color: var(--bg-main);
-    color: var(--color-txt);
-    border-radius: var(--border-radius);
-    display: grid;
-    place-items: center;
-    font-size: var(--font-size-lg);
-    cursor: pointer;
-    margin-bottom: 5%;
+  height: 80px;
+  background-color: var(--bg-main);
+  color: var(--color-txt);
+  border-radius: var(--border-radius);
+  display: grid;
+  place-items: center;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  margin-bottom: 5%;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+  border: 2px solid var(--black);
+}
+
+#btn-play {
+  background-color: var(--green);
+  color: var(--white);
 }
 
 
@@ -119,6 +144,7 @@ body {
   bottom:0;
   left:0;
   animation: rise 100s forwards;
+  z-index: -1;
 }
 
 

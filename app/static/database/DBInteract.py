@@ -3,6 +3,7 @@ import random
 import mysql.connector
 import requests
 
+from images import Fetcher
 
 class DBInteract:
 
@@ -241,8 +242,10 @@ db.close()
                 answer = 0
             else:
                 answer = 1
+
+        image_url1, image_url2 = Fetcher.getImage(productTuple[0][1]), Fetcher.getImage(productTuple[1][1])
         
-        questions.append((productTuple, higherMode, answer))
+        questions.append((productTuple, (image_url1,image_url2), higherMode, answer))
 
         productTuple = db.getProductsWithRange(10, productTuple[0][0])
         

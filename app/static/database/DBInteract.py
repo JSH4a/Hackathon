@@ -4,20 +4,20 @@ import mysql.connector
 import requests
 
 
-class dbInteract:
+class DBInteract:
 
     def __init__(self):
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="root",
+            password="password",
             database="dataset"
         )
         self.conn = self.db.cursor(buffered=True)
         self.conn.execute("SELECT max(id) FROM PRODUCTS")
         self.maxProductId = self.conn.fetchone()[0]
 
-    def addProduct(self, name: str, emissions: float, manufacturer:str, tags: str):
+    def addProduct(self, name: str, emissions: float, manufacturer: str, tags: str):
         self.conn.execute("SELECT max(id) FROM PRODUCTS")
         id = self.conn.fetchone()[0] + 1
         sql = "INSERT INTO PRODUCTS (id, name, emissions, manufacturer, tags) VALUES (%s, %s, %s, %s, %s);"
@@ -25,7 +25,7 @@ class dbInteract:
         self.conn.execute(sql, vals)
         self.db.commit()
 
-    def addCompany(self, name: str, emissions: int, tags: str):
+    def addCompany(self, name: str, emissions: float, tags: str):
         self.conn.execute("SELECT max(id) FROM COMPANIES")
         id = self.conn.fetchone()[0] + 1
         sql = "INSERT INTO COMPANIES (id, name, emissions, tags) VALUES (%s, %s, %s, %s);"
@@ -41,7 +41,7 @@ class dbInteract:
 
         return self.conn.fetchone()
 
-    def getProductsWithRange(self, ranger:int, id=None):
+    def getProductsWithRange(self, ranger: int, id=None):
 
         if ranger > self.maxProductId:
             raise Exception("Error, range too large")
@@ -71,10 +71,13 @@ class dbInteract:
                 if ranger == 0:
                     toss = random.randint(0, 2)
                     if toss == 1:
-                        return (results[len(results)-i][0], results[len(results) - i][1], results[len(results) - i][2]), (product1id,
+                        return (
+                        results[len(results) - i][0], results[len(results) - i][1], results[len(results) - i][2]), (
+                        product1id,
                         product1, product1Emissions)
                     else:
-                        return (product1id, product1, product1Emissions), (results[len(results)-i][0], results[len(results) - i][1], results[len(results) - i][2])
+                        return (product1id, product1, product1Emissions), (
+                        results[len(results) - i][0], results[len(results) - i][1], results[len(results) - i][2])
                 if found:
                     ranger -= 1
                 if results[len(results) - i][0] == choice:
@@ -85,7 +88,7 @@ class dbInteract:
                     toss = random.randint(0, 2)
                     if toss == 1:
                         return (results[i][0], results[i][1], results[i][2]), (product1id,
-                        product1, product1Emissions)
+                                                                               product1, product1Emissions)
                     else:
                         return (product1id, product1, product1Emissions), (results[i][0], results[i][1], results[i][2])
                 if found:
@@ -93,7 +96,60 @@ class dbInteract:
                 if results[i][0] == choice:
                     found = True
 
+    def getCompaniesWithRange(self, ranger: int, id=None):
 
+        if ranger > (self.maxProductId+1)/2:
+            raise Exception("Error, range too large")
+        choice = id
+        # chooses a random product
+        if id is None:
+            choice = random.randint(0, self.maxProductId)
+
+        self.conn.execute("SELECT * FROM COMPANIES WHERE id=" + str(choice))
+
+        result1 = self.conn.fetchone()
+
+        product1id = result1[0]
+        product1 = result1[1]
+        product1Emissions = result1[2]
+
+        # gets results ordered by emissions
+        self.conn.execute("SELECT * FROM COMPANIES ORDER BY emissions")
+        results = self.conn.fetchall()
+
+        # gets num of results with emissions>product1
+        self.conn.execute("SELECT COUNT(*) FROM COMPANIES where emissions>" + str(product1Emissions))
+        found = False
+        # if the range up would be out of the dataset
+        if ranger >= self.conn.fetchone()[0]:
+            for i in range(1, len(results) + 1):
+                if ranger == 0:
+                    toss = random.randint(0, 2)
+                    if toss == 1:
+                        return (
+                        results[len(results) - i][0], results[len(results) - i][1], results[len(results) - i][2]), (
+                        product1id,
+                        product1, product1Emissions)
+                    else:
+                        return (product1id, product1, product1Emissions), (
+                        results[len(results) - i][0], results[len(results) - i][1], results[len(results) - i][2])
+                if found:
+                    ranger -= 1
+                if results[len(results) - i][0] == choice:
+                    found = True
+        else:
+            for i in range(0, len(results)):
+                if ranger == 0:
+                    toss = random.randint(0, 2)
+                    if toss == 1:
+                        return (results[i][0], results[i][1], results[i][2]), (product1id,
+                                                                               product1, product1Emissions)
+                    else:
+                        return (product1id, product1, product1Emissions), (results[i][0], results[i][1], results[i][2])
+                if found:
+                    ranger -= 1
+                if results[i][0] == choice:
+                    found = True
 
     def getNearbyProduct(self, id, ranger):
         self.getProductsWithRange(ranger, id=id)
@@ -106,18 +162,18 @@ class dbInteract:
         self.conn.execute(stmt, vals)
         return self.conn.fetchone()[1]
 
-    #id of data, number who got it right, num who got it wrong
-    def updateTimesSeen(self, id, correct:int, guesses:int):
-        if(id is not None and id<=self.maxProductId):
-            self.conn.execute("SELECT timesSeen, timesCorrect FROM PRODUCTS WHERE id = "+str(id))
+    # id of data, number who got it right, num who got it wrong
+    def updateTimesSeen(self, id, correct: int, guesses: int):
+        if (id is not None and id <= self.maxProductId):
+            self.conn.execute("SELECT timesSeen, timesCorrect FROM PRODUCTS WHERE id = " + str(id))
             result = self.conn.fetchone()
             stmt = "UPDATE PRODUCTS SET timesSeen=%s, timesCorrect=%s WHERE id=%s"
-            vals = (result[0]+guesses,result[1]+correct, id)
+            vals = (result[0] + guesses, result[1] + correct, id)
             self.conn.execute(stmt, vals)
             self.db.commit()
 
-    #returns a tuple (timesCorrect, timesSeen)
-    def getPrevResults(self, id:int):
+    # returns a tuple (timesCorrect, timesSeen)
+    def getPrevResults(self, id: int):
         stmt = "SELECT timesCorrect, timesSeen FROM PRODUCTS WHERE id=%s"
         vals = (id,)
         self.conn.execute(stmt, vals)
@@ -135,11 +191,41 @@ class dbInteract:
         self.db.close()
 
     # how does loadig screen work - does number of guessed right update as the lobby guesses?
+    def getCompanyEm(self, company):
+        url = "https://api.ditchcarbon.com/v1.0/supplier?name=" + company + "&currency=GBP"
+        headers = {
+            "accept": "application/json",
+            "authorization": "Bearer e112c9aa3edab54da198096201dab502"
+        }
+        response = requests.get(url, headers=headers).json()
 
-# return ((productID,))
-def getQuestions(numQ):
-    questions = []
+        # print("1: ",type(response) )
 
+
+
+db = DBInteract()
+
+file = open("Companies.txt", encoding="utf8", errors='ignore')
+
+count = 0
+print("INSERT INTO COMPANIES (id, name, emissions, tags) VALUES")
+for line in file:
+    int(count)
+    count+=1
+    line = line.replace(str(count), "").replace("%", "").replace("\n", "")
+    current = line.split("-")
+    print("("+str(count-1)+", \""+current[0]+"\","+str(float(current[1]))+","+"\"\"),")
+
+
+
+"""
+file = open("facts.txt", encoding="utf8", errors='ignore')
+count=0
+for line in file:
+    db.addFact(count, line)
+    count+=1
+
+db.close()
     db = dbInteract()
 
     productTuple = db.getProductsWithRange(random.randint(1, 40))
@@ -164,4 +250,4 @@ def getQuestions(numQ):
 
     return questions
 
-print(getQuestions(10))
+"""

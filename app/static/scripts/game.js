@@ -1,5 +1,7 @@
 const image_top = document.getElementById('image-top');
 const image_bottom = document.getElementById('image-bottom');
+const top_lab = document.getElementById('top-label')
+const bot_lab = document.getElementById('bot-label')
 const podium = document.getElementById('podium')
 const podFirst = document.getElementById('podium-text1')
 const podSec = document.getElementById('podium-text2')
@@ -29,9 +31,7 @@ document.querySelector('#image-bottom').addEventListener('click', (e) => {
 
 // socket stuff
 
-function sendQuestionAnswer(score) {
-    socket.emit('answered-question', { username: username, room: roomId, score:score})
-}
+
 
 $(document).ready(function() {
     var socket = io.connect("http://127.0.0.1:5000/");
@@ -46,6 +46,16 @@ $(document).ready(function() {
         window.roomId = data
     })
 
+    function sendQuestionAnswer(score) {
+        socket.emit('answered-question', { username: username, room: window.roomId, score:score})
+        loading_screen.classList.remove('hidden');
+        top_half.classList.add('hidden');
+        bottom_half.classList.add('hidden');
+        loading_screen.focus();
+        top_half.focus();
+        bottom_half.focus();
+    }
+
     window.addEventListener('beforeunload', function(event) {
         // Emit a leave message to the server
         console.log('leaving')
@@ -55,8 +65,14 @@ $(document).ready(function() {
         event.preventDefault();
         event.returnValue = '';
     });
-
+    socket.on('set-questions', function(data) {
+        window.questions = data['questions']
+        console.log(window.questions)
+        window.curIndex = 0
+        window.maxIndex = data['num']
+    });
     socket.on('show-game', function(data) {
+        console.log(window.curIndex)
         loading_screen.classList.add('hidden');
         top_half.classList.remove('hidden');
         bottom_half.classList.remove('hidden');
@@ -64,7 +80,12 @@ $(document).ready(function() {
         top_half.focus();
         bottom_half.focus();
 
-        question = data['questions'][0]
+        question = window.questions[window.curIndex]
+
+        top_lab.innerHTML = question[0][0][1]
+        bot_lab.innerHTML = question[0][1][1]
+
+
         if (question[1] == 0) {
             console.log("higher")
         } else {
@@ -72,41 +93,17 @@ $(document).ready(function() {
         }
         if (question[2] == 0){
             image_top.addEventListener('click', function () {
-                socket.emit('answered-question', { username: username, room: window.roomId, score:100})
-                loading_screen.classList.remove('hidden');
-                top_half.classList.add('hidden');
-                bottom_half.classList.add('hidden');
-                loading_screen.focus();
-                top_half.focus();
-                bottom_half.focus();
+                setTimeout(sendQuestionAnswer, 600, 100)
             });
             image_bottom.addEventListener('click', function() {
-                socket.emit('answered-question', { username: username, room: window.roomId, score:0})
-                loading_screen.classList.remove('hidden');
-                top_half.classList.add('hidden');
-                bottom_half.classList.add('hidden');
-                loading_screen.focus();
-                top_half.focus();
-                bottom_half.focus();
+                setTimeout(sendQuestionAnswer, 600, 0)
             });
         } else {
             image_top.addEventListener('click', function () {
-                socket.emit('answered-question', { username: username, room: window.roomId, score:0})
-                loading_screen.classList.remove('hidden');
-                top_half.classList.add('hidden');
-                bottom_half.classList.add('hidden');
-                loading_screen.focus();
-                top_half.focus();
-                bottom_half.focus();
+                setTimeout(sendQuestionAnswer, 600, 0)
             });
             image_bottom.addEventListener('click', function() {
-                socket.emit('answered-question', { username: username, room: window.roomId, score:100})
-                loading_screen.classList.remove('hidden');
-                top_half.classList.add('hidden');
-                bottom_half.classList.add('hidden');
-                loading_screen.focus();
-                top_half.focus();
-                bottom_half.focus();
+                setTimeout(sendQuestionAnswer, 600, 100)
             });
         }
 
@@ -123,8 +120,20 @@ $(document).ready(function() {
         podSec.innerHTML = "2. "+data[1]
         podThird.innerHTML = "3. "+data[2]
         setTimeout(function(){
-            window.location.href = '/'
-            //socket.emit('next-question')
+            window.curIndex += 1
+            if (window.curIndex >= window.maxIndex){
+                console.log("Finished the questions")
+                socket.emit('leave', { username: username, room: window.roomId})
+                setTimeout(function() {
+                    window.location.href = '/'
+                }, 60000)
+            } else {
+                podium.classList.add('hidden')
+                loading_screen.classList.remove('hidden')
+                podium.focus()
+                loading_screen.focus()
+                socket.emit('next-question')
+            }
         }, 5000)
     })
 

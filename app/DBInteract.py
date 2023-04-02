@@ -17,7 +17,7 @@ class dbInteract:
         self.conn.execute("SELECT max(id) FROM PRODUCTS")
         self.maxProductId = self.conn.fetchone()[0]
 
-    def addProduct(self, name: str, emissions: float, manufacturer:str, tags: str):
+    def addProduct(self, name: str, emissions: float, manufacturer: str, tags: str):
         self.conn.execute("SELECT max(id) FROM PRODUCTS")
         id = self.conn.fetchone()[0] + 1
         sql = "INSERT INTO PRODUCTS (id, name, emissions, manufacturer, tags) VALUES (%s, %s, %s, %s, %s);"
@@ -41,8 +41,7 @@ class dbInteract:
 
         return self.conn.fetchone()
 
-    def getProductsWithRange(self, ranger:int, id=None):
-
+    def getProductsWithRange(self, ranger: int, id=None):
         if ranger > self.maxProductId:
             raise Exception("Error, range too large")
         choice = id
@@ -71,10 +70,12 @@ class dbInteract:
                 if ranger == 0:
                     toss = random.randint(0, 2)
                     if toss == 1:
-                        return (results[len(results)-i][0], results[len(results) - i][1], results[len(results) - i][2]), (product1id,
-                        product1, product1Emissions)
+                        return (results[len(results) - i][0], results[len(results) - i][1],
+                                results[len(results) - i][2]), (product1id,
+                                                                product1, product1Emissions)
                     else:
-                        return (product1id, product1, product1Emissions), (results[len(results)-i][0], results[len(results) - i][1], results[len(results) - i][2])
+                        return (product1id, product1, product1Emissions), (
+                            results[len(results) - i][0], results[len(results) - i][1], results[len(results) - i][2])
                 if found:
                     ranger -= 1
                 if results[len(results) - i][0] == choice:
@@ -85,7 +86,7 @@ class dbInteract:
                     toss = random.randint(0, 2)
                     if toss == 1:
                         return (results[i][0], results[i][1], results[i][2]), (product1id,
-                        product1, product1Emissions)
+                                                                               product1, product1Emissions)
                     else:
                         return (product1id, product1, product1Emissions), (results[i][0], results[i][1], results[i][2])
                 if found:
@@ -175,6 +176,7 @@ count=0
 for line in file:
     db.addFact(count, line)
     count+=1
+
     
 db.close()
 

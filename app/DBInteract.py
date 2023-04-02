@@ -93,6 +93,36 @@ class dbInteract:
                 if results[i][0] == choice:
                     found = True
 
+    def getNearbyProduct(self, id, ranger):
+        self.getProductsWithRange(ranger, id=id)
+
+    def getRandomFact(self, prevFactId=None):
+        self.conn.execute("SELECT max(id) FROM FACTS")
+        current = self.conn.fetchone()
+        print(current[0])
+        if prevFactId is None:
+            choice = random.randint(0, current[0])
+        else:
+            choice = prevFactId
+            while choice == prevFactId:
+                choice = random.randint(0, current[0])
+        stmt = "SELECT * FROM FACTS WHERE id=%s"
+        vals = (choice,)
+        self.conn.execute(stmt, vals)
+        return self.conn.fetchone()
+
+    # id of data, number who got it right, num who got it wrong
+    def updateTimesSeen(self, id, correct: int, guesses: int):
+        if id is not None and id <= self.maxProductId:
+            self.conn.execute("SELECT timesSeen, timesCorrect FROM PRODUCTS WHERE id = " + str(id))
+            result = self.conn.fetchone()
+            stmt = "UPDATE PRODUCTS SET timesSeen=%s, timesCorrect=%s WHERE id=%s"
+            vals = (result[0] + guesses, result[1] + correct, id)
+            self.conn.execute(stmt, vals)
+            self.db.commit()
+
+    # returns a tuple (timesCorrect, timesSeen)
+    def getPrevResults(self, id: int):
 
 
     def getNearbyProduct(self, id, ranger):

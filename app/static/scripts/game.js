@@ -1,5 +1,9 @@
 const image_top = document.getElementById('image-top');
 const image_bottom = document.getElementById('image-bottom');
+const podium = document.getElementById('podium')
+const podFirst = document.getElementById('podium-text1')
+const podSec = document.getElementById('podium-text2')
+const podThird = document.getElementById('podium-text3')
 
 const loading_screen = document.getElementById('loading-screen');
 const top_half = document.getElementById('top');
@@ -25,16 +29,21 @@ document.querySelector('#image-bottom').addEventListener('click', (e) => {
 
 // socket stuff
 
+function sendQuestionAnswer(score) {
+    socket.emit('answered-question', { username: username, room: roomId, score:score})
+}
+
 $(document).ready(function() {
     var socket = io.connect("http://127.0.0.1:5000/");
-    var roomId = document.getElementById("room-id").getAttribute('data-value')
+    //var roomId = document.getElementById("room-id").getAttribute('data-value')
     var username = document.cookie.split('=')[1];
 
     socket.on('connect', function() {
         socket.emit('join', { username: username});});
 
     socket.on('set-roomId', function(data) {
-        var roomId = data
+        console.log(data)
+        window.roomId = data
     })
 
     window.addEventListener('beforeunload', function(event) {
@@ -54,6 +63,69 @@ $(document).ready(function() {
         loading_screen.focus();
         top_half.focus();
         bottom_half.focus();
-        alert("Room full - starting game")
+
+        question = data['questions'][0]
+        if (question[1] == 0) {
+            console.log("higher")
+        } else {
+            console.log("not higher")
+        }
+        if (question[2] == 0){
+            image_top.addEventListener('click', function () {
+                socket.emit('answered-question', { username: username, room: window.roomId, score:100})
+                loading_screen.classList.remove('hidden');
+                top_half.classList.add('hidden');
+                bottom_half.classList.add('hidden');
+                loading_screen.focus();
+                top_half.focus();
+                bottom_half.focus();
+            });
+            image_bottom.addEventListener('click', function() {
+                socket.emit('answered-question', { username: username, room: window.roomId, score:0})
+                loading_screen.classList.remove('hidden');
+                top_half.classList.add('hidden');
+                bottom_half.classList.add('hidden');
+                loading_screen.focus();
+                top_half.focus();
+                bottom_half.focus();
+            });
+        } else {
+            image_top.addEventListener('click', function () {
+                socket.emit('answered-question', { username: username, room: window.roomId, score:0})
+                loading_screen.classList.remove('hidden');
+                top_half.classList.add('hidden');
+                bottom_half.classList.add('hidden');
+                loading_screen.focus();
+                top_half.focus();
+                bottom_half.focus();
+            });
+            image_bottom.addEventListener('click', function() {
+                socket.emit('answered-question', { username: username, room: window.roomId, score:100})
+                loading_screen.classList.remove('hidden');
+                top_half.classList.add('hidden');
+                bottom_half.classList.add('hidden');
+                loading_screen.focus();
+                top_half.focus();
+                bottom_half.focus();
+            });
+        }
+
+
+
     });
+
+    socket.on('leaderboard', function(data) {
+        podium.classList.remove('hidden')
+        loading_screen.classList.add('hidden')
+        podium.focus()
+        loading_screen.focus()
+        podFirst.innerHTML = "1. "+data[0]
+        podSec.innerHTML = "2. "+data[1]
+        podThird.innerHTML = "3. "+data[2]
+        setTimeout(function(){
+            window.location.href = '/'
+            //socket.emit('next-question')
+        }, 5000)
+    })
+
 });

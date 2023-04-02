@@ -10,7 +10,7 @@ class DBInteract:
         self.db = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="password",
+            password="root",
             database="dataset"
         )
         self.conn = self.db.cursor(buffered=True)
@@ -201,6 +201,9 @@ class DBInteract:
 
         # print("1: ",type(response) )
 
+# return ((productID,))
+def getQuestions(numQ):
+    questions = []
         co2 = response["ef_kg_co2eq"]
 
         # print("3: ", co2 )
@@ -230,58 +233,28 @@ for line in file:
     count+=1
 
 db.close()
+    db = dbInteract()
 
-"""
-"""
-file = open("carbonData (2).txt", encoding="utf8", errors='ignore')
-count = 0
-
-for line in file:
-    count += 1
-    if count >141:
-        #print("Line{}: {}".format(count, line.strip()))
-        currentLine = "{} {}".format(count, line.strip()).replace("Line", "").replace(str(count),"").replace(" - ", "±").replace("$", "").replace(",", "").replace("\ufeff","").replace("  ", "").replace(" ", "%20")
-        currentLine = currentLine.split("±")
-
-        if "." in currentLine[2]:
-            currentLine[2] = currentLine[2].replace(".", "")
+    productTuple = db.getProductsWithRange(random.randint(1, 40))
+    for i in range(numQ):
+        higherMode = round(random.randint(0, 1))
+        if higherMode:
+            if productTuple[0][2] >  productTuple[1][2]:
+                answer = 0
+            else:
+                answer = 1
         else:
-            currentLine[2] = currentLine[2]+"00"
+            if productTuple[0][2] < productTuple[1][2]:
+                answer = 0
+            else:
+                answer = 1
+        
+        questions.append((productTuple, higherMode, answer))
 
-        url = "https://api.ditchcarbon.com/v1.0/product?name="+currentLine[0]+"&manufacturer="+currentLine[1]+"&price_cents="+currentLine[2]+"&price_currency=GBP"
+        productTuple = db.getProductsWithRange(10, productTuple[0][0])
+        
+    db.close()
 
-        headers = {
-            "accept": "application/json",
-            "authorization": "Bearer e112c9aa3edab54da198096201dab502"
-        }
+    return questions
 
-        response = requests.get(url, headers=headers)
-        response = response.json()
-        print(response)
-        #response = (response.text).replace("{\"carbon_footprint\":", "").replace("{\"name\":", "").replace("{\"manufacturer\":", "")
-        if(response is not None):
-            db.addProduct(currentLine[0].replace("%20", " "), response["carbon_footprint"], response["manufacturer"], "")
-
-
-"""
-db.close()
-
-"""
-    conn.execute("CREATE TABLE COMPANIES ("
-                   "id int(6),"
-                   "name VARCHAR(20) NOT NULL,"
-                   "emissions int(20) NOT NULL,"
-                   "tags VARCHAR(30) NOT NULL,"
-                   "timesSeen int(7) DEFAULT 0,"
-                   "timesCorrect int(7) DEFAULT 0)")
-    """
-"""
-    conn.execute("CREATE TABLE products ("
-                   "id int(6),"
-                   "name VARCHAR(10) NOT NULL,"
-                   "emissions DOUBLE (9,8) NOT NULL,"
-                   "tags VARCHAR(30) NOT NULL,"
-                   "timesSeen int(7) DEFAULT 0,"
-                   "timesCorrect int(7) DEFAULT 0"
-                   ")")
-    """
+print(getQuestions(10))

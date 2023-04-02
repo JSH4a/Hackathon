@@ -18,11 +18,11 @@ html, body {
 }
 
 #top {
-  background-color: #f2f2f2; /* set the background color of the top half */
+  background-color: #f2f2f200; /* set the background color of the top half */
 }
 
 #bottom {
-  background-color: #ccc; /* set the background color of the bottom half */
+  background-color: #cccccc00; /* set the background color of the bottom half */
 }
 
 .half h2 {
@@ -100,7 +100,6 @@ html, body {
 #podium {
   top: 20%;
   left: 50%;
-  display: none;
 }
 
 .circle-container {

@@ -53,11 +53,7 @@ def on_answer(data):
     score = data['score']
     rooms[roomId].addScore(username, score)
     rooms[roomId].answers.add(username)
-
-    
-
     print("\n\n", username, " has answered\n\n")
-
     print('ooooooooooooo',len(rooms[roomId].getPlayers()))
     if len(rooms[roomId].answers) == len(rooms[roomId].getPlayers()):
         top3 = [str(key)+":"+str(value) for key, value in rooms[roomId].getPlayers().items()]

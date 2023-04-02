@@ -5,7 +5,7 @@ const GAMEMODES = ["Classic", "Elimniation", "Stanley"]
 
 let game_index = 0; 
 
-var socket = io.connect("http://138.38.198.157:5000/");
+var socket = io.connect("http://127.0.0.1:5000/");
 
 socket.on('change_webpage', function (data){
     window.location.href = data

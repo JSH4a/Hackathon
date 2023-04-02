@@ -93,17 +93,17 @@ $(document).ready(function() {
         }
         if (question[2] == 0){
             image_top.addEventListener('click', function () {
-                setTimeout(sendQuestionAnswer, 1000, 100)
+                setTimeout(sendQuestionAnswer, 600, 100)
             });
             image_bottom.addEventListener('click', function() {
-                setTimeout(sendQuestionAnswer, 1000, 0)
+                setTimeout(sendQuestionAnswer, 600, 0)
             });
         } else {
             image_top.addEventListener('click', function () {
-                setTimeout(sendQuestionAnswer, 1000, 0)
+                setTimeout(sendQuestionAnswer, 600, 0)
             });
             image_bottom.addEventListener('click', function() {
-                setTimeout(sendQuestionAnswer, 1000, 100)
+                setTimeout(sendQuestionAnswer, 600, 100)
             });
         }
 
@@ -123,6 +123,7 @@ $(document).ready(function() {
             window.curIndex += 1
             if (window.curIndex >= window.maxIndex){
                 console.log("Finished the questions")
+                socket.emit('leave', { username: username, room: window.roomId})
                 setTimeout(function() {
                     window.location.href = '/'
                 }, 60000)

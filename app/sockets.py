@@ -2,6 +2,7 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from flask import redirect
 from . import socketio
 from .routes import removePlayerFromRoom, getRoomCode, rooms
+from .static.database.DBInteract import getQuestions
 
 @socketio.on('message')
 def handle_message(data):
@@ -33,16 +34,13 @@ def on_join(data):
     # then start game
         print("room full")
         # hide waiting
-        questions = [[((0,"name", 10),(1,"name2", 100)), 0, 0]]#getQuestions
+        questions = getQuestions(5) #[[((0,"name", 10),(1,"name2", 100)), 0, 0]]#getQuestions
         data = {}
         data['questions'] = questions
-        emit('show-game', data, room=room_code)
-        # get game info
-            # get game products / companies
-            # get image
-        # un hide game halves
+        data['num'] = len(questions)
+        emit('set-questions', data, room=room_code)
+        emit('show-game', room=room_code)
 
-    # else return waiting
     
 @socketio.on('answered-question')
 def on_answer(data):
@@ -54,9 +52,12 @@ def on_answer(data):
     if rooms[roomId].answers == len(rooms[roomId].getPlayers()):
         top3 = [str(key)+":"+str(value) for key, value in rooms[roomId].getPlayers().items()]
         top3 = sorted(top3, key=lambda x: x.split(':')[1], reverse=True)[:3]
-        print(len(top3))
+        rooms[roomId].answers = 0
         emit('leaderboard', top3, room=roomId)
-    
+
+@socketio.on('next-question')
+def next_question():
+    emit('show-game')
     
 @socketio.on('leave')
 def on_leave(data):

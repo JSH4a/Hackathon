@@ -1,6 +1,7 @@
 import random
 
 import mysql.connector
+import requests
 
 
 class dbInteract:
@@ -16,11 +17,11 @@ class dbInteract:
         self.conn.execute("SELECT max(id) FROM PRODUCTS")
         self.maxProductId = self.conn.fetchone()[0]
 
-    def addProduct(self, name: str, emissions: float, tags: str):
+    def addProduct(self, name: str, emissions: float, manufacturer:str, tags: str):
         self.conn.execute("SELECT max(id) FROM PRODUCTS")
         id = self.conn.fetchone()[0] + 1
-        sql = "INSERT INTO PRODUCTS (id, name, emissions, tags) VALUES (%s, %s, %s, %s);"
-        vals = (id, name, emissions, tags)
+        sql = "INSERT INTO PRODUCTS (id, name, emissions, manufacturer, tags) VALUES (%s, %s, %s, %s, %s);"
+        vals = (id, name, emissions, manufacturer, tags)
         self.conn.execute(sql, vals)
         self.db.commit()
 
@@ -40,14 +41,17 @@ class dbInteract:
 
         return self.conn.fetchone()
 
-    def getProductsWithRange(self, ranger:int):
+    def getProductsWithRange(self, ranger:int, id=None):
 
         if ranger > self.maxProductId:
             raise Exception("Error, range too large")
-
+        choice = id
         # chooses a random product
-        choice = random.randint(0, self.maxProductId)
+        if id is None:
+            choice = random.randint(0, self.maxProductId)
+
         self.conn.execute("SELECT * FROM PRODUCTS WHERE id=" + str(choice))
+
         result1 = self.conn.fetchone()
 
         product1id = result1[0]
@@ -89,6 +93,19 @@ class dbInteract:
                 if results[i][0] == choice:
                     found = True
 
+
+
+    def getNearbyProduct(self, id, ranger):
+        self.getProductsWithRange(ranger, id=id)
+
+    def getRandomFact(self, prevFact=None):
+        self.conn.execute("SELECT max(id) FROM FACTS")
+        choice = random.randint(0, self.conn.fetchone()[0])
+        stmt = "SELECT * FROM FACTS WHERE id=%s"
+        vals = (choice,)
+        self.conn.execute(stmt, vals)
+        return self.conn.fetchone()[1]
+
     #id of data, number who got it right, num who got it wrong
     def updateTimesSeen(self, id, correct:int, guesses:int):
         if(id is not None and id<=self.maxProductId):
@@ -106,9 +123,11 @@ class dbInteract:
         self.conn.execute(stmt, vals)
         return self.conn.fetchone()
 
-
-
-
+    def addFact(self, id, fact):
+        stmt = "INSERT INTO FACTS (id, fact) VALUES (%s,%s)"
+        vals = (id, fact)
+        self.conn.execute(stmt, vals)
+        self.db.commit()
 
     # must call on close
     def close(self):
@@ -119,7 +138,49 @@ class dbInteract:
 
 
 db = dbInteract()
-print(db.getPrevResults(-1))
+print(db.getRandomFact())
+"""
+file = open("facts.txt", encoding="utf8", errors='ignore')
+count=0
+for line in file:
+    db.addFact(count, line)
+    count+=1
+    
+db.close()
+
+"""
+"""
+file = open("carbonData (2).txt", encoding="utf8", errors='ignore')
+count = 0
+
+for line in file:
+    count += 1
+    if count >141:
+        #print("Line{}: {}".format(count, line.strip()))
+        currentLine = "{} {}".format(count, line.strip()).replace("Line", "").replace(str(count),"").replace(" - ", "±").replace("$", "").replace(",", "").replace("\ufeff","").replace("  ", "").replace(" ", "%20")
+        currentLine = currentLine.split("±")
+
+        if "." in currentLine[2]:
+            currentLine[2] = currentLine[2].replace(".", "")
+        else:
+            currentLine[2] = currentLine[2]+"00"
+
+        url = "https://api.ditchcarbon.com/v1.0/product?name="+currentLine[0]+"&manufacturer="+currentLine[1]+"&price_cents="+currentLine[2]+"&price_currency=GBP"
+
+        headers = {
+            "accept": "application/json",
+            "authorization": "Bearer e112c9aa3edab54da198096201dab502"
+        }
+
+        response = requests.get(url, headers=headers)
+        response = response.json()
+        print(response)
+        #response = (response.text).replace("{\"carbon_footprint\":", "").replace("{\"name\":", "").replace("{\"manufacturer\":", "")
+        if(response is not None):
+            db.addProduct(currentLine[0].replace("%20", " "), response["carbon_footprint"], response["manufacturer"], "")
+
+
+"""
 db.close()
 
 """

@@ -3,6 +3,8 @@
   <head>
     <title>Hotter or Colder</title>
     <link rel="stylesheet" href="../static/css/base.css"></style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js" integrity="sha512-pumBsjNRGGqkPzKHndZMaAG+bir374sORyzM3uulLV14lN5LyykqNk8eEeUlUkB3U0M4FApyaHraT65ihJhDpQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.6.1/socket.io.js" integrity="sha512-xbQU0+iHqhVt7VIXi6vBJKPh3IQBF5B84sSHdjKiSccyX/1ZI7Vnkt2/8y8uruj63/DVmCxfUNohPNruthTEQA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </head>
   <body>
     
@@ -12,19 +14,58 @@
             <input type="text" placeholder="Username" maxlength="12" id="input-username" class="input-username">
             <div class="btn" id="btn-play">Play Now</div>
             <div class="btn" id="btn-private">Private</div>
-            <div class="btn" id="gamemode">
-                Classic
-            </div>  
+            <div class="btn" id="gamemode">Classic</div>  
             <script src="../static/scripts/start-up.js"></script>   
         </div>
     </div>
 
+    <!--
     <div id="water-container">
       <div class="ocean">
         <div class="wave"></div>
         <div class="wave"></div>
       </div>
     </div>
+    -->
+    <div class="ocean">
+      <svg viewBox = "0 0 100 200">  <!-- -->
+        <path id="wave1" d="M -100 10 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0
+        l 0 3000 L -100 60 L -100 10" class="moving-path1" >
 
+        </path>
+
+        <path id="wave1" d="M -100 15 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0
+        l 0 3000 L -100 60 L -100 15" class="moving-path2" >
+
+        </path>
+
+        <path id="wave1" d="M -150 20 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0 
+        c 10 -5, 10 -5, 20 0 c 10 5, 10 5, 20 0
+        l 0 3000 L -150 3000 L -150 20" class="moving-path3" >
+
+        </path>
+    </svg>
+    <div class="solid-div>hi</div>
+  </div>
   </body>
 </html>

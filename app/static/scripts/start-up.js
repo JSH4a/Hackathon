@@ -5,6 +5,12 @@ const GAMEMODES = ["Classic", "Elimniation", "Stanley"]
 
 let game_index = 0; 
 
+var socket = io.connect("http://127.0.0.1:5000/");
+
+socket.on('change_webpage', function (data){
+    window.location.href = data
+});
+
 
 // name validation
 document.querySelector('#btn-play').addEventListener('click', () => {
@@ -18,6 +24,15 @@ document.querySelector('#btn-play').addEventListener('click', () => {
     }
     //else start game
     else {
+        data = {'username':$('#input-username').val(),
+                'gamemode':document.getElementById("gamemode").innerHTML}
+
+        socket.emit('start_game', data, callback=function (data){
+            console.log(data)
+            document.cookie = "username="+data['cookie']+";max-age=31536000"
+            window.location.href = data['redirect']
+        });
+
 
     }
 });
